@@ -1,3 +1,9 @@
+:root{
+  --body-bg-color: #a2b9bc;
+  --div-input-color: #f8f9fa;
+  --div-list-color: #f8f9fa;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +11,50 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--body-bg-color);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.todo-list{
+  width: 50%;
+  align-self: center;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  margin: 0px 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  background-color: var(--div-list-color);
+}
+#root{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.todo-div{
+  display: flex;
+  width: 50%;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px 0px;
+  border-style: solid;
+  border-width: 1px;
+  background-color: var(--div-input-color);
+}
+.todo-input{
+width: 30%;
+height: 80%;
+
+}
+.form-button{
+  font-size: 20px;
+}
+form{
+  background-color: aqua;
 }

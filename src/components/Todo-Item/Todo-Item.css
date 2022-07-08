@@ -1,0 +1,21 @@
+.todo-item-div{
+    display: flex;
+    justify-content: space-between;
+    border: solid;
+    align-items: center;
+    border-width: 2px;
+    border-color: black;
+    max-height: 30%;
+}
+.todo-delete-button , .todo-finish-button{
+    font-size: 26px;
+    height: 30%;
+}
+.todo-finish-button > img{
+    
+}
+
+.todo-name{
+    margin: auto 10px;
+    float: left;
+}
