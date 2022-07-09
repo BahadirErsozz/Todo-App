@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-import Todo from "./components/Todo-Item/Todo-Item";
+import React, { useEffect, useRef, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import TodoList from "./components/Todo-list/Todo-List";
 
@@ -8,32 +7,48 @@ function App() {
  const [name, setName] = useState("name")
  const [todos, setTodos] = useState([])
  const [userInput, setUserInput] = useState("")
+ const [clicked, setClicked] = useState("")
 
  const inputRef = useRef() 
-  const handleDelete = () =>{
-    setTodos(todos.filter(item => item.id !== 0))
+  const addItem = (e) => {
+    const inp = inputRef.current.value
+    if(inp !== ""){
+      if(clicked === ""){
+        setTodos(oldArray => {
+          return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"todo-item"}]
+        })
+      }
+      else{
+        const newTodos = todos.map(obj => {
+          if(obj.id === clicked){
+            const newFolder_todos = obj.folder_todos
+            return {...obj, folder_todos: [...newFolder_todos, {id: uuidv4(), name: inp, finished: false, type:"todo-item"}]}
+          }
+          return obj
+        })
+        setTodos(newTodos)
+        
+      }
+    } 
+    inputRef.current.value = null
   }
-  const handleClick = () => {
-    
-    setTodos(oldArray => [...oldArray, <Todo content={userInput} ></Todo>])
-    setCount(count + 1)
-    setName(name.concat("asd"))
+  const selectFolderOnClick = (id) => {
+    console.log("selected")
+    setClicked(id)
     return
   }
-  const onInputChange = (inp) => {
-    setUserInput(inp.target.value)
-  }
-  const addItem = (e) => {
+  const addFolder = (e) => {
     const inp = inputRef.current.value
     if(inp !== "")
     setTodos(oldArray => {
-      return [...oldArray, {id: uuidv4(), name: inp, finished: false}]
+      return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"folder", folder_todos: []}]
     })
     inputRef.current.value = null
-  } 
+  }  
   const deleteOnClick = (id) =>{
     setTodos(todos.filter(item => item.id !== id))
   }
+  // folder'dan değiştirmem lazım
   const finishOnClick = (id) => {
     const todosCopy = [...todos]
     const todo = todosCopy.find(todo => todo.id === id)
@@ -47,14 +62,27 @@ function App() {
     })
     setTodos(todosCopy)
   }
+ /*  useEffect(() =>{
+    fetch("https://catfact.ninja/fact")
+      .then(
+        res => res.json()
+        )
+      .then(
+        (res) => {
+          console.log(res)
+        }
+      )
+      
+  }) */
   return (
     <><div className="todo-div">
         <input type="text" placeholder="Todo Name" ref={inputRef} className="todo-input"/>
         <button onClick={addItem} className="form-button"> Add</button> 
         <button onClick={unfinishAll} className="form-button"> Unfinish All</button>
+        <button onClick={addFolder} className="form-button"> Add Folder</button>
       </div>
       <div className="todo-list">
-        <TodoList todos={todos} deleteOnClick={deleteOnClick} finishOnClick={finishOnClick}></TodoList>  
+        <TodoList todos={todos} deleteOnClick={deleteOnClick} finishOnClick={finishOnClick} clicked={clicked} selectFolderOnClick={selectFolderOnClick}></TodoList>  
       </div>
     </>
   );
