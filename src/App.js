@@ -3,52 +3,42 @@ import {v4 as uuidv4} from 'uuid';
 import TodoList from "./components/Todo-list/Todo-List";
 
 function App() {
- const [count, setCount] = useState(0)
- const [name, setName] = useState("name")
  const [todos, setTodos] = useState([])
- const [userInput, setUserInput] = useState("")
  const [clicked, setClicked] = useState("")
 
- const inputRef = useRef() 
+ const inputRef = useRef()
+ const handleClickOutside = (e) => {
+  if(e.target.classList.value !== "todo-div" && e.target.classList.value !== "todo-input" && e.target.classList.value !== "form-button")
+    setClicked("")
+    console.log(e.target.classList.value)
+ }
+ useEffect(() => {
+  document.addEventListener('click', handleClickOutside, true)
+ }, []) 
   const addItem = (e) => {
     const inp = inputRef.current.value
     if(inp !== ""){
-      if(clicked === ""){
-        setTodos(oldArray => {
-          return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"todo-item"}]
-        })
-      }
-      else{
-        const newTodos = todos.map(obj => {
-          if(obj.id === clicked){
-            const newFolder_todos = obj.folder_todos
-            return {...obj, folder_todos: [...newFolder_todos, {id: uuidv4(), name: inp, finished: false, type:"todo-item"}]}
-          }
-          return obj
-        })
-        setTodos(newTodos)
-        
-      }
+      setTodos(oldArray => {
+        return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"todo-item", parent_id: clicked}]
+      }) 
     } 
     inputRef.current.value = null
   }
-  const selectFolderOnClick = (id) => {
-    console.log("selected")
+  const selectFolderOnClick = (id) => { 
     setClicked(id)
-    return
   }
   const addFolder = (e) => {
     const inp = inputRef.current.value
-    if(inp !== "")
-    setTodos(oldArray => {
-      return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"folder", folder_todos: []}]
-    })
+    if(inp !== ""){
+      setTodos(oldArray => {
+        return [...oldArray, {id: uuidv4(), name: inp, finished: false, type:"folder", parent_id: clicked}]
+      }) 
+    }
     inputRef.current.value = null
   }  
   const deleteOnClick = (id) =>{
     setTodos(todos.filter(item => item.id !== id))
   }
-  // folder'dan değiştirmem lazım
   const finishOnClick = (id) => {
     const todosCopy = [...todos]
     const todo = todosCopy.find(todo => todo.id === id)
@@ -58,7 +48,14 @@ function App() {
   const unfinishAll = () =>{
     const todosCopy = [...todos]
     todosCopy.map(todo => {
-        todo.finished = false
+        if(clicked !== ""){
+          if(todo.parent_id === clicked){
+            todo.finished = false
+          }
+        }
+        else{
+          todo.finished = false
+        } 
     })
     setTodos(todosCopy)
   }
